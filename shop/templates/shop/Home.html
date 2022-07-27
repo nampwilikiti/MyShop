@@ -1,0 +1,200 @@
+{% extends 'layout.html' %}
+
+  {% block  title%}
+    
+  <title>My Shop</title>
+
+  {% endblock  %}
+{% block content %}
+<center>
+  <h2>MY SHOP</h2>
+  <p><b>Tafuta bidhaa unayoitaka na upate maelezo, bei, mawasiliano na ramani ya duka au sehemu bidhaa inapopatikana
+  </p></b>
+  <form  action="search" method="post">
+    {% csrf_token %}
+	<b>Tafuta unachokitaka:
+    <input  type="search" name="search" placeholder="Andika unachotafuta" required>
+    <button  type="submit" name="submit" class="btn btn-primary">
+    Tafuta</button>
+  </b>
+  </form>
+</center>
+{% if msg1 or msg2 %}
+<div class="container-fluid" style="color:red; margin: auto; text-align:center; padding-top: 5%;">
+<h1>{{msg1}}</h1>
+<h2>{{msg2}}</h2>
+</div>
+{% endif %}
+<div class="container-fluid" style="padding-top: 1%;">
+		<div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-md-4" >
+			{% for p in products %}
+			<div class="col">
+				<div class="card">
+				<img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}" style="height:250px;">
+					<div class="card-body" style="text-align: center; color: darkblue ">
+						<h5 class="card-title" >{{ p.name }} : {{ p.price }}</h5>
+						<!-- link za canvasi za kudisplay maelezo na ramani-->
+						<div class="card-footer" style="margin: auto; width: 13rem;"> 
+							
+
+              <div class="d-grid gap-2 d-md-block">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#maelezo{{p.id}}">Maelezo</button>
+                <form action="show_map" method="post" style="float: right;">
+                  {% csrf_token %}
+                  <input  type="text" name="productlocation" value="{{p.seller.sehemu}}" hidden>
+                  <input  type="text" name="productname" value="{{p.name}}" hidden>
+                  <input  type="text" name="pid" value="{{p.id}}" hidden>
+                  <button type="submit" class="btn btn-primary" name="submit">Ramani</button>
+                  </b>
+                </form>
+              </div>
+            </div>
+					</div>
+				</div>
+		</div>
+
+{% comment %} Modal for maelezoo {% endcomment %}
+<div class="modal fade" id="maelezo{{p.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    	<div class="modal-header">
+			<h4 class="modal-title" id="maelezo{{p.id}}">Maelezo Zaidi Kuhusu <b>{{p.name}}</b></h4>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    	</div>
+		<div class="modal-body">
+			<h5>
+				Jina La Muuzaji: <b>{{p.seller}}</b>
+				<br>
+				<br>		
+				Eneo: <b>{{p.seller.sehemu}}</b>
+				<br>
+				<br>
+				Namba ya Simu: <b>{{p.seller.simu}}</b>
+				<br>
+				<br>
+				Maelezo ya ziada: <b>{{p.discription}}</b>
+				<br>
+				<br>
+				Tarehe Iliyowekwa: <b>{{p.time}}</b>
+			</h5>
+		  
+    	</div>
+    	<div class="modal-footer">
+        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nyuma</button>
+    	</div>
+	</div>
+  </div>
+</div>
+
+
+{% endfor %}
+	</div>
+</div>
+
+
+{% endblock content %}
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+
+              <form>
+
+                <div class="form-outline mb-4">
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example1cg">Your Name</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example3cg">Your Email</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example4cg">Password</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="password" id="form3Example4cdg" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example4cdg">Repeat your password</label>
+                </div>
+
+                <div class="form-check d-flex justify-content-center mb-5">
+                  <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" />
+                  <label class="form-check-label" for="form2Example3g">
+                    I agree all statements in <a href="#!" class="text-body"><u>Terms of service</u></a>
+                  </label>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button type="button"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                </div>
+
+                <p class="text-center text-muted mt-5 mb-0">Have already an account? <a href="#!"
+                    class="fw-bold text-body"><u>Login here</u></a></p>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+sign in 
+
+<section class="vh-100 gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+
+              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+              <p class="text-white-50 mb-5">Please enter your login and password!</p>
+
+              <div class="form-outline form-white mb-4">
+                <input type="email" id="typeEmailX" class="form-control form-control-lg" />
+                <label class="form-label" for="typeEmailX">Email</label>
+              </div>
+
+              <div class="form-outline form-white mb-4">
+                <input type="password" id="typePasswordX" class="form-control form-control-lg" />
+                <label class="form-label" for="typePasswordX">Password</label>
+              </div>
+
+              <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+
+              <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+
+              <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
+                <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
+                <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
+              </div>
+
+            </div>
+
+            <div>
+              <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,193 @@
+{% extends 'layout.html' %}
+  {% block  title%}
+    
+  <title>My Page</title>
+
+  {% endblock  %}
+{% block content %}
+	
+{% for user in userdata  %}
+<center><h2>Ukurasa wa Mr. {{ user.first_name}} {{ user.last_name}}.
+	<br>
+ Unaweza kuweka bidhaa mpya, kubadili au kufuta taarifa za bidhaa zako</h2>
+</center>
+{% endfor %}
+<!-- Modal -->
+ <h4>Kuweka bidhaa mpya  
+ 	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addproductModal">Weka
+	</button>
+
+
+<div class="modal fade" id="addproductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Kuweka Bidhaa Mpya</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+		  <div class='row' style='width:80%; margin: auto; border: 2px solid'>
+			<form action="add_product" method="post" margin-top="2%" enctype="multipart/form-data">
+				{% csrf_token %}
+				<br>
+				<label for="name">Jina la Bidhaa:</label>
+				<input class="form-control" type="text" name="name" placeholder="Andika jina" id="jina" required>
+				<label for="cartegory">Aina ya Bidhaa:</label>
+				<select name="cartegory" class="form-control me-2" aria-label="Search" style="color:darkblue;">
+          <option value="">Chagua Aina</option>
+          <option value="nguo">Nguo</option>
+          <option value="Kompyuta & Simu">Kompyuta & Simu</option>
+          <option value="Vyombo vya Usafiri">Vyombo vya Usafiri</option>
+          <option value="Stationary & ofsini">Vifaa vya Ofsini</option>
+          <option value="Vifaa vya Mazoezi">Vifaa vya Mazoezi</option>
+          <option value="Vifaa vya Ujenzi">Vifaa vya Ujenzi</option>
+          <option value="Thamani za Mbao">Thamani za Mbao</option>
+          <option value="Vitu vya Nyumbani">Vitu vya Nyumbani</option>
+          <option value="Vyakula">Vyakula</option>
+          <option value="Vyuma">Vyuma</option>
+          <option value="Vingine">Vingine</option>
+        </select>
+				<label for="price">Bei:</label>
+				<input class="form-control" type="number" name="price" placeholder="Andika bei" required>
+				<label for="discription">Maelezo Mengine:</label>
+				<input class="form-control" type="text" name="discription" placeholder=" Andika Maelezo mengine">
+				<label for="image">Picha:</label>
+				<input class="form-control" type="file" name="pic" placeholder="Weka picha">
+				<br>
+				<button class="btn btn-primary" type="submit" name="submit" style="float:right">Save</button>
+			</form>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Funga</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+		<br>
+		<div>
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Picha</th>
+					<th>Jina</th>
+					<th>Bei</th>
+					<th>Action</th>
+				</tr>
+				{% for product in pics %}
+				<tr>
+					<td style="text-align: center;"><img src="{{ product.image.url }}" style="height: 70px; width: 70px;"></td>
+					<td>{{ product.name }}</td>
+					<td> {{ product.price }}</td>
+					<td>
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-default{{product.id}}">Angalia</button>
+						<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#updateModal{{product.id}}">Badili</button>
+						<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{product.id}}">Futa</button>
+					</td>
+				</tr>
+			
+
+<!-- view models for displaying image of a product-->
+<div class="modal fade" id="modal-default{{product.id}}" tabindex="-1" aria-labelledby="{{user.id}}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+		  <h4 class="modal-title" id="{{product.id}}">{{ product.name }}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+		  <div class='row' style='width:95%;
+		   margin: auto;
+		    border: 10px solid;
+			border-radius:5px'>
+			<img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Update models for updating a product-->
+<div class="modal fade" id="updateModal{{product.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">Badili Taarifa za {{product.name}}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+			<form action="/update_product/{{product.id}}" method="post" margin-top="2%" enctype="multipart/form-data">
+				{% csrf_token %}
+				<br>
+				<label for="name">Jina:</label>
+				<input class="form-control" type="text" name="name" placeholder="{{ product.name }}" id="jina" required>
+				<label for="cartegory">Aina:</label>
+				<input class="form-control" id="username" type="text" name="cartegory" placeholder=" {{ product.cartegory }}">
+				<label for="price">Bei:</label>
+				<input class="form-control" type="number" name="price" placeholder="{{ product.price }}" required>
+				<label for="discription">Maelezo Zaidi:</label>
+				<input class="form-control" type="text" name="discription" placeholder="{{ product.discription }}">
+				<label for="image">Picha:</label>
+				<input class="form-control" type="file" name="pic" placeholder="Pakia picha">
+				<br>
+				<button class="btn btn-primary" type="submit" name="submit" style="float:right">Save</button>
+			</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Delete models for deleting a product-->
+<div class="modal fade" id="deleteModal{{product.id}}" tabindex="-1"  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel">Futa {{ product.name }}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+		  <p> Are you sure you want to delete permanently?</p>
+			
+				<a class="btn btn-danger" type="button" href="/delete_product/{{product.id}}" style="float:right">Ndio</a>
+				<button type="button" class="btn btn-info" data-bs-dismiss="modal">Hapana</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{%endfor%}
+			</table>
+		</div>
+	</div>
+				
+<!--
+		<div class="container">
+          <!--Simple Form
+          <h2 class="my-4">Add a new movie poster</h2>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                <input type="file" name="upload" accept="image/*">
+                <br>
+                <button class="btn btn-dark my-4" type="submit">Submit</button>
+          </form>
+
+          <!--See Image Uploaded
+          <h2 class="my-4">Movie Poster</h2>
+          <div class="row">
+            {% if file_url %}
+            <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+              <img src="{{ file_url }}" class="img-fluid">
+              <br>
+              <a class="btn btn-dark my-4" href="/">Return to Homepage</a>
+            {% else %}
+            	<p>No movies posters added.</p>
+            {% endif %}
+          	</div>
+
+        </div>
+	</div>
+	-->
+
+{%endblock%}

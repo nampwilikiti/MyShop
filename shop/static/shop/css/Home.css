@@ -1,0 +1,7 @@
+body {
+    background-color: rgb(220, 200, 175);
+    flex: 1;
+    color: darkblue;
+    box-sizing: border-box;
+    margin: 0;
+}

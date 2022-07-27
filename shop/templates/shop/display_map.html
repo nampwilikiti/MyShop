@@ -1,0 +1,140 @@
+{% extends 'layout.html' %}
+{% block  title%}
+    
+  <title>Ramani ya Bidhaa</title>
+
+  {% endblock  %}
+
+{% block content %}
+<center>
+  <h2>MY SHOP</h2>
+  <p><b>Tafuta bidhaa unayoitaka na upate maelezo, bei, mawasiliano na ramani ya duka au sehemu bidhaa inapopatikana
+  </p></b>
+  <form  action="search" method="post">
+    {% csrf_token %}
+	<b>Tafuta unachokitaka:
+    <input  type="search" name="search" placeholder="Andika unachotafuta" required>
+    <button  type="submit" name="submit" class="btn btn-primary">
+    Tafuta</button>
+  </b>
+  </form>
+</center>
+
+<div class="container-fluid">
+	<div class="row row-cols-1" >
+		{% for p in products %}
+		{% if n == p %}
+		
+		<div class="col">
+			<div class="card">
+				<!-- div ya kudisplay Heading ya map-->
+				<div class="card-title">
+					<h4 class="card-title" ><center>Ramani ya {{ p.name }}</center></h4>
+					<hr>
+				</div>
+
+				<!-- div ya kudisplay Map-->
+				<div class="card-body" style="text-align: center; color: darkblue; width:98%; border:4px solid;margin:auto;" >
+					{{ m | safe }}
+				
+				<!-- div ya kudisplay Umbali-->
+				<div class="card-footer" style="margin: auto; text-align: center;">
+					{% if  Distance %}
+					<h4> {{ Distance }} </h4>
+					{% else %}
+					<p>
+					<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						Umbali kutoka ulipo
+					</button>
+					</p>
+					<div class="collapse" id="collapseExample">
+						<div class="card card-body">
+							 {{ p.name }}
+							<form  action="Distance" method="post">
+								{% csrf_token %}
+								<h3>
+								<b>Sehemu ulipo:
+								<input  type="text" name="product_id" value="{{ p.id }}">
+								<input  type="text" name="seller_id" value="{{ p.seller.id }}">
+								<input  type="text" name="user_place" placeholder="mfano: bombambili,songea" required>
+								<button  type="submit" name="submit" class="btn btn-primary">
+								kokotoa</button>
+								</h3>
+								</b>
+							</form>
+							
+						</div>
+						{% endif %}
+					</div>
+				</div>
+				</div>
+			</div>   
+		</div>
+		{% endif %}
+		{% endfor %}
+	</div>
+</div>
+        
+<div class="container-fluid">
+	<h3><center>Related Products</center></h3>
+		<div class="row gy-4 row-cols-1 row-cols-sm-2 row-cols-md-4" >
+			{% for p in products %}
+			<div class="col">
+				<div class="card">
+					<img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}" style="height:300px;">
+					<div class="card-body" style="text-align: center; color: darkblue ">
+						<h5 class="card-title" >{{ p.name }} : {{ p.price }}</h5>
+					</div>
+					<!-- link za canvasi za kudisplay maelezo na ramani-->
+					<div class="card-footer" style="margin: auto; width: 12rem;"> 
+						<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#maelezo{{p.id}}" style="float: left;">Maelezo</button>
+						<form action="show_map" method="post" style="float: right;">
+							{% csrf_token %}
+							<input  type="text" name="productlocation" value="{{p.seller.sehemu}}" hidden>
+							<input  type="text" name="productname" value="{{p.name}}" hidden>
+							<input  type="text" name="pid" value="{{p.id}}" hidden>
+							<button type="submit" class="btn btn-primary" name="submit">Map</button>
+							</b>
+						</form>
+					</div>
+					
+				</div>
+			</div>
+
+	{% comment %} Modal for maelezoo {% endcomment %}
+	<div class="modal fade" id="maelezo{{p.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="maelezo{{p.id}}">Details About <b>{{p.name}}</b></h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h5>
+						Seller Name: <b>{{p.seller}}</b>
+						<br>
+						<br>		
+						Location: <b>{{p.seller.sehemu}}</b>
+						<br>
+						<br>
+						Phone Number: <b>{{p.seller.simu}}</b>
+						<br>
+						<br>
+						Description: <b>{{p.discription}}</b>
+						<br>
+						<br>
+						Posted At: <b>{{p.time}}</b>
+					</h5>
+				
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+</div>
+</div>
+
+{% endblock content %}
